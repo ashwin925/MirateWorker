@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 700px; margin: 0 auto;">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="bi bi-person-plus-fill"></i> {{ t.worker_registration }}</h3>
+        </div>
+        
+        <form method="POST" action="{{ url_for('register') }}">
+            <div class="grid grid-2">
+                <div class="form-group">
+                    <label class="form-label"><i class="bi bi-person"></i> {{ t.name }} *</label>
+                    <input type="text" class="form-control" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="bi bi-calendar"></i> {{ t.age }} *</label>
+                    <input type="number" class="form-control" name="age" min="18" max="100" required>
+                </div>
+            </div>
+            
+            <div class="grid grid-2">
+                <div class="form-group">
+                    <label class="form-label"><i class="bi bi-gender-ambiguous"></i> {{ t.gender }} *</label>
+                    <select class="form-control" name="gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="Male">{{ t.male }}</option>
+                        <option value="Female">{{ t.female }}</option>
+                        <option value="Other">{{ t.other }}</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="bi bi-phone"></i> {{ t.mobile }} *</label>
+                    <input type="tel" class="form-control" name="mobile" pattern="[0-9]{10}" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label"><i class="bi bi-geo-alt"></i> {{ t.origin_state }} *</label>
+                <input type="text" class="form-control" name="origin_state" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label"><i class="bi bi-house"></i> {{ t.tn_address }} *</label>
+                <textarea class="form-control" name="address_tn" rows="2" required></textarea>
+            </div>
+            
+            <div class="grid grid-2">
+                <div class="form-group">
+                    <label class="form-label"><i class="bi bi-building"></i> {{ t.employer_name }} *</label>
+                    <input type="text" class="form-control" name="employer_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="bi bi-tools"></i> {{ t.skills }} *</label>
+                    <input type="text" class="form-control" name="skills" required>
+                </div>
+            </div>
+            
+            <div class="grid grid-2">
+                <div class="form-group">
+                    <label class="form-label"><i class="bi bi-telephone-fill"></i> {{ t.emergency_contact }} *</label>
+                    <input type="tel" class="form-control" name="emergency_contact" pattern="[0-9]{10}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="bi bi-credit-card"></i> Aadhaar Number (Optional)</label>
+                    <input type="text" class="form-control" name="aadhaar" pattern="[0-9]{12}" placeholder="12-digit Aadhaar">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label"><i class="bi bi-key"></i> Create Password *</label>
+                <input type="password" class="form-control" name="password" minlength="6" autocomplete="new-password" required>
+                <div class="form-text">Minimum 6 characters. You'll use this to login later.</div>
+            </div>
+            
+            <div class="flex gap-8">
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="bi bi-check-circle"></i> {{ t.submit }}
+                </button>
+            </div>
+            
+            <div class="text-center mt-16">
+                <a href="{{ url_for('worker_login') }}" class="text-primary">Already registered? Login here</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

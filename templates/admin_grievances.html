@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title"><i class="bi bi-exclamation-triangle"></i> Manage Grievances</h1>
+</div>
+
+<div class="card mb-16">
+    <div class="flex gap-8">
+        <a href="{{ url_for('admin_grievances') }}" class="btn {{ 'btn-primary' if not status_filter else 'btn-outline' }}">
+            All
+        </a>
+        <a href="{{ url_for('admin_grievances', status='Pending') }}" class="btn {{ 'btn-primary' if status_filter == 'Pending' else 'btn-outline' }}">
+            Pending
+        </a>
+        <a href="{{ url_for('admin_grievances', status='In Progress') }}" class="btn {{ 'btn-primary' if status_filter == 'In Progress' else 'btn-outline' }}">
+            In Progress
+        </a>
+        <a href="{{ url_for('admin_grievances', status='Resolved') }}" class="btn {{ 'btn-primary' if status_filter == 'Resolved' else 'btn-outline' }}">
+            Resolved
+        </a>
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Worker ID</th>
+                <th>Issue Type</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for g in grievances %}
+            <tr>
+                <td>{{ g.id }}</td>
+                <td><a href="{{ url_for('worker_profile', unique_id=g.unique_worker_id) }}" class="text-primary">{{ g.unique_worker_id }}</a></td>
+                <td>{{ g.issue_type }}</td>
+                <td>{{ g.description[:50] }}...</td>
+                <td>
+                    <span class="badge badge-{{ 'red' if g.status == 'Pending' else 'orange' if g.status == 'In Progress' else 'green' }}">
+                        {{ g.status }}
+                    </span>
+                </td>
+                <td>{{ g.created_at[:10] }}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm" onclick="openModal('modal{{ g.id }}')">
+                        <i class="bi bi-pencil"></i> Update
+                    </button>
+                </td>
+            </tr>
+
+            <!-- Update Modal -->
+            <div id="modal{{ g.id }}" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4>Update Grievance #{{ g.id }}</h4>
+                        <button onclick="closeModal('modal{{ g.id }}')" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+                    </div>
+                    <form method="POST" action="{{ url_for('update_status') }}">
+                        <div class="modal-body">
+                            <input type="hidden" name="grievance_id" value="{{ g.id }}">
+                            
+                            <div class="form-group">
+                                <label class="form-label">Status</label>
+                                <select class="form-control" name="status" required>
+                                    <option value="Pending" {% if g.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                    <option value="In Progress" {% if g.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                    <option value="Resolved" {% if g.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Resolution Notes</label>
+                                <textarea class="form-control" name="resolution_notes" rows="4">{{ g.resolution_notes or '' }}</textarea>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <strong>Issue:</strong> {{ g.issue_type }}<br>
+                                <strong>Description:</strong> {{ g.description }}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="closeModal('modal{{ g.id }}')">Close</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-16">
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+
+<script>
+function openModal(id) {
+    document.getElementById(id).classList.add('active');
+}
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+}
+</script>
+{% endblock %}

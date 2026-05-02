@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 700px; margin: 0 auto;">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="bi bi-exclamation-triangle-fill"></i> {{ t.grievance_form }}</h3>
+        </div>
+        
+        <div class="alert alert-info">
+            <strong>{{ t.name }}:</strong> {{ worker.name }}<br>
+            <strong>{{ t.unique_id }}:</strong> {{ worker.unique_id }}
+        </div>
+
+        <form method="POST" action="{{ url_for('grievance_submit') }}">
+            <input type="hidden" name="unique_worker_id" value="{{ worker.unique_id }}">
+
+            <div class="form-group">
+                <label class="form-label"><i class="bi bi-tag"></i> {{ t.issue_type }} *</label>
+                <select class="form-control" name="issue_type" required>
+                    <option value="">Select Issue Type</option>
+                    <option value="Workplace Issue">{{ t.workplace_issue }}</option>
+                    <option value="Payment Dispute">{{ t.payment_dispute }}</option>
+                    <option value="Health Issue">{{ t.health_issue }}</option>
+                    <option value="Missing Documents">{{ t.missing_documents }}</option>
+                    <option value="Abuse/Harassment">{{ t.abuse_harassment }}</option>
+                    <option value="Legal Aid">{{ t.legal_aid }}</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"><i class="bi bi-chat-left-text"></i> {{ t.description }} *</label>
+                <textarea class="form-control" name="description" rows="6" required placeholder="Please describe your issue in detail..."></textarea>
+            </div>
+
+            <div class="flex gap-8">
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="bi bi-send"></i> {{ t.submit }}
+                </button>
+            </div>
+            
+            <div class="text-center mt-16">
+                <a href="{{ url_for('worker_profile', unique_id=worker.unique_id) }}" class="text-primary">Back to Profile</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

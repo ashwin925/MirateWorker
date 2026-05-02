@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile-card mb-24">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            {{ worker.name[0].upper() }}
+        </div>
+        <div class="profile-info">
+            <h2>{{ worker.name }}</h2>
+            <div class="profile-id">ID: {{ worker.unique_id }}</div>
+        </div>
+    </div>
+    
+    <div class="action-bar">
+        <a href="{{ url_for('worker_pdf', unique_id=worker.unique_id) }}" class="btn btn-primary">
+            <i class="bi bi-file-pdf"></i> Download ID Card
+        </a>
+        <a href="{{ url_for('grievance_form', unique_id=worker.unique_id) }}" class="btn btn-outline">
+            <i class="bi bi-exclamation-triangle"></i> Submit Grievance
+        </a>
+        <a href="{{ url_for('job_list') }}" class="btn btn-outline">
+            <i class="bi bi-briefcase"></i> Browse Jobs
+        </a>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon orange">
+            <i class="bi bi-exclamation-triangle"></i>
+        </div>
+        <div class="stat-content">
+            <h3>{{ grievances|length }}</h3>
+            <p>My Grievances</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon green">
+            <i class="bi bi-briefcase"></i>
+        </div>
+        <div class="stat-content">
+            <h3>{{ applications|length }}</h3>
+            <p>Job Applications</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon blue">
+            <i class="bi bi-building"></i>
+        </div>
+        <div class="stat-content">
+            <h3>{{ job_openings|length }}</h3>
+            <p>Active Jobs</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon red">
+            <i class="bi bi-calendar"></i>
+        </div>
+        <div class="stat-content">
+            <h3>{{ worker.registration_date[:10] }}</h3>
+            <p>Member Since</p>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-2">
+    <div>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="bi bi-person-badge"></i> Profile Details</h3>
+            </div>
+            <div class="profile-details">
+                <div class="profile-item">
+                    <span class="profile-label">Name</span>
+                    <span class="profile-value">{{ worker.name }}</span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Age</span>
+                    <span class="profile-value">{{ worker.age }}</span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Gender</span>
+                    <span class="profile-value">{{ worker.gender }}</span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Mobile</span>
+                    <span class="profile-value">{{ worker.mobile }}</span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Origin State</span>
+                    <span class="profile-value">{{ worker.origin_state }}</span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">TN Address</span>
+                    <span class="profile-value">{{ worker.address_tn }}</span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Employer</span>
+                    <span class="profile-value">{{ worker.employer_name }}</span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Skills</span>
+                    <span class="profile-value">{{ worker.skills }}</span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Emergency Contact</span>
+                    <span class="profile-value">{{ worker.emergency_contact }}</span>
+                </div>
+                {% if worker.aadhaar %}
+                <div class="profile-item">
+                    <span class="profile-label">Aadhaar</span>
+                    <span class="profile-value">{{ worker.aadhaar }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="bi bi-qr-code"></i> QR Code</h3>
+            </div>
+            <div class="text-center">
+                <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" style="max-width: 200px; border: 2px solid var(--border-gray); border-radius: 8px;">
+                <p class="text-muted mt-8">Scan to view profile</p>
+            </div>
+        </div>
+    </div>
+    
+    <div>
+        <div class="card mb-16">
+            <div class="card-header">
+                <h3 class="card-title"><i class="bi bi-exclamation-triangle"></i> My Grievances</h3>
+            </div>
+            {% if grievances %}
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Issue Type</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for g in grievances %}
+                        <tr>
+                            <td>{{ g.issue_type }}</td>
+                            <td><span class="badge badge-{{ 'red' if g.status == 'Pending' else 'orange' if g.status == 'In Progress' else 'green' }}">{{ g.status }}</span></td>
+                            <td>{{ g.created_at[:10] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No grievances submitted yet.</p>
+            {% endif %}
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="bi bi-briefcase"></i> Job Applications</h3>
+            </div>
+            {% if applications %}
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                        <tr>
+                            <td>{{ app.title }}</td>
+                            <td>{{ app.company_name }}</td>
+                            <td><span class="badge badge-{{ 'orange' if app.status == 'Pending' else 'blue' if app.status == 'Shortlisted' else 'green' if app.status == 'Selected' else 'red' }}">{{ app.status }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No applications yet. <a href="{{ url_for('job_list') }}" class="text-primary">Browse jobs</a></p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

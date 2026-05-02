@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title"><i class="bi bi-people"></i> Manage Workers</h1>
+</div>
+
+<div class="card mb-16">
+    <form method="GET" class="flex gap-8">
+        <div class="search-box" style="flex: 1;">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" class="form-control" name="search" placeholder="Search by ID, Name, or Mobile" value="{{ search }}">
+        </div>
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search"></i> Search
+        </button>
+    </form>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Unique ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Mobile</th>
+                <th>Origin State</th>
+                <th>Employer</th>
+                <th>Registration Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for worker in workers %}
+            <tr>
+                <td><strong>{{ worker.unique_id }}</strong></td>
+                <td>{{ worker.name }}</td>
+                <td>{{ worker.age }}</td>
+                <td>{{ worker.gender }}</td>
+                <td>{{ worker.mobile }}</td>
+                <td>{{ worker.origin_state }}</td>
+                <td>{{ worker.employer_name }}</td>
+                <td>{{ worker.registration_date[:10] }}</td>
+                <td>
+                    <a href="{{ url_for('worker_profile', unique_id=worker.unique_id) }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-eye"></i> View
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-16">
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+{% endblock %}

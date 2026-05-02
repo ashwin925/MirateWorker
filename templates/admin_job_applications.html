@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title"><i class="bi bi-file-earmark-person"></i> Applications for: {{ job.title }}</h1>
+</div>
+
+<div class="card mb-16">
+    <div class="grid grid-2">
+        <div>
+            <div class="profile-item">
+                <span class="profile-label">Company</span>
+                <span class="profile-value">{{ job.company_name }}</span>
+            </div>
+            <div class="profile-item">
+                <span class="profile-label">Location</span>
+                <span class="profile-value">{{ job.location }}</span>
+            </div>
+            <div class="profile-item">
+                <span class="profile-label">Vacancies</span>
+                <span class="profile-value">{{ job.vacancies }}</span>
+            </div>
+        </div>
+        <div>
+            <div class="profile-item">
+                <span class="profile-label">Total Applications</span>
+                <span class="profile-value">{{ applications|length }}</span>
+            </div>
+            <div class="profile-item">
+                <span class="profile-label">Deadline</span>
+                <span class="profile-value">{{ job.deadline }}</span>
+            </div>
+            <div class="profile-item">
+                <span class="profile-label">Status</span>
+                <span class="profile-value">
+                    <span class="badge badge-{{ 'green' if job.status == 'Active' else 'gray' }}">{{ job.status }}</span>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Worker Name</th>
+                <th>Worker ID</th>
+                <th>Mobile</th>
+                <th>Skills</th>
+                <th>Origin State</th>
+                <th>Applied On</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+            <tr>
+                <td>{{ app.id }}</td>
+                <td><a href="{{ url_for('worker_profile', unique_id=app.unique_worker_id) }}" class="text-primary">{{ app.name }}</a></td>
+                <td>{{ app.unique_worker_id }}</td>
+                <td>{{ app.mobile }}</td>
+                <td>{{ app.skills }}</td>
+                <td>{{ app.origin_state }}</td>
+                <td>{{ app.application_date[:10] }}</td>
+                <td>
+                    <span class="badge badge-{{ 'orange' if app.status == 'Pending' else 'blue' if app.status == 'Shortlisted' else 'green' if app.status == 'Selected' else 'red' }}">
+                        {{ app.status }}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn btn-primary btn-sm" onclick="openModal('appModal{{ app.id }}')">
+                        <i class="bi bi-pencil"></i> Update
+                    </button>
+                </td>
+            </tr>
+
+            <!-- Update Modal -->
+            <div id="appModal{{ app.id }}" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4>Update Application - {{ app.name }}</h4>
+                        <button onclick="closeModal('appModal{{ app.id }}')" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-muted);">&times;</button>
+                    </div>
+                    <form method="POST" action="{{ url_for('update_application_status', app_id=app.id) }}">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label class="form-label">Status</label>
+                                <select class="form-control" name="status" required>
+                                    <option value="Pending" {% if app.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                    <option value="Shortlisted" {% if app.status == 'Shortlisted' %}selected{% endif %}>Shortlisted</option>
+                                    <option value="Selected" {% if app.status == 'Selected' %}selected{% endif %}>Selected</option>
+                                    <option value="Rejected" {% if app.status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Admin Notes</label>
+                                <textarea class="form-control" name="admin_notes" rows="3">{{ app.admin_notes or '' }}</textarea>
+                            </div>
+
+                            {% if app.cover_letter %}
+                            <div class="alert alert-info">
+                                <strong>Cover Letter:</strong><br>
+                                {{ app.cover_letter }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="closeModal('appModal{{ app.id }}')">Close</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if not applications %}
+<div class="card text-center" style="padding: 40px;">
+    <p class="text-muted">No applications received yet.</p>
+</div>
+{% endif %}
+
+<div class="mt-16">
+    <a href="{{ url_for('admin_jobs') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Jobs
+    </a>
+</div>
+
+<script>
+function openModal(id) {
+    document.getElementById(id).classList.add('active');
+}
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 0 auto;">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title text-center"><i class="bi bi-shield-lock-fill"></i> Admin Login</h3>
+        </div>
+        
+        <form method="POST">
+            <div class="form-group">
+                <label class="form-label"><i class="bi bi-person"></i> Username</label>
+                <input type="text" class="form-control" name="username" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"><i class="bi bi-key"></i> Password</label>
+                <input type="password" class="form-control" name="password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block btn-lg">
+                <i class="bi bi-box-arrow-in-right"></i> Login
+            </button>
+            
+            <div class="text-center mt-16">
+                <a href="{{ url_for('index') }}" class="text-primary">Back to Home</a>
+            </div>
+        </form>
+    </div>
+    
+    <div class="card mt-16" style="background: var(--light-orange); border-color: var(--primary-orange);">
+        <div style="font-size: 13px; color: var(--text-secondary);">
+            <strong>Default Credentials:</strong><br>
+            Username: <code>admin</code><br>
+            Password: <code>admin123</code>
+        </div>
+    </div>
+</div>
+{% endblock %}

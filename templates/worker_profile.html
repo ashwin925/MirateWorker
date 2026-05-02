@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <div class="alert alert-success">
+        <i class="bi bi-check-circle-fill"></i>
+        <strong>Registration Successful!</strong><br>
+        Worker ID: <strong>{{ worker.unique_id }}</strong>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="bi bi-person-badge"></i> {{ t.worker_profile }}</h3>
+        </div>
+        
+        <div class="grid grid-2">
+            <div>
+                <div class="profile-details">
+                    <div class="profile-item">
+                        <span class="profile-label">{{ t.unique_id }}</span>
+                        <span class="profile-value"><strong class="text-primary">{{ worker.unique_id }}</strong></span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">{{ t.name }}</span>
+                        <span class="profile-value">{{ worker.name }}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">{{ t.age }}</span>
+                        <span class="profile-value">{{ worker.age }}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">{{ t.gender }}</span>
+                        <span class="profile-value">{{ worker.gender }}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">{{ t.mobile }}</span>
+                        <span class="profile-value">{{ worker.mobile }}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">{{ t.origin_state }}</span>
+                        <span class="profile-value">{{ worker.origin_state }}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">{{ t.tn_address }}</span>
+                        <span class="profile-value">{{ worker.address_tn }}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">{{ t.employer_name }}</span>
+                        <span class="profile-value">{{ worker.employer_name }}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">{{ t.skills }}</span>
+                        <span class="profile-value">{{ worker.skills }}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">{{ t.emergency_contact }}</span>
+                        <span class="profile-value">{{ worker.emergency_contact }}</span>
+                    </div>
+                    {% if worker.aadhaar %}
+                    <div class="profile-item">
+                        <span class="profile-label">Aadhaar</span>
+                        <span class="profile-value">{{ worker.aadhaar }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="profile-item">
+                        <span class="profile-label">{{ t.registration_date }}</span>
+                        <span class="profile-value">{{ worker.registration_date }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <h4>{{ t.qr_code }}</h4>
+                <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" style="max-width: 250px; border: 2px solid var(--border-gray); border-radius: 8px; padding: 10px;">
+                <p class="text-muted mt-8">Scan to view profile</p>
+            </div>
+        </div>
+        
+        <div class="action-bar mt-24">
+            <a href="{{ url_for('worker_pdf', unique_id=worker.unique_id) }}" class="btn btn-primary">
+                <i class="bi bi-file-pdf"></i> {{ t.download_pdf }}
+            </a>
+            <a href="{{ url_for('grievance_form', unique_id=worker.unique_id) }}" class="btn btn-outline">
+                <i class="bi bi-exclamation-triangle"></i> {{ t.submit_grievance }}
+            </a>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                <i class="bi bi-house"></i> {{ t.back_home }}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title"><i class="bi bi-speedometer2"></i> Admin Dashboard</h1>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon blue">
+            <i class="bi bi-people"></i>
+        </div>
+        <div class="stat-content">
+            <h3>{{ stats.total_workers }}</h3>
+            <p>Total Workers</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon orange">
+            <i class="bi bi-exclamation-triangle"></i>
+        </div>
+        <div class="stat-content">
+            <h3>{{ stats.total_grievances }}</h3>
+            <p>Total Grievances</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon red">
+            <i class="bi bi-clock"></i>
+        </div>
+        <div class="stat-content">
+            <h3>{{ stats.pending_grievances }}</h3>
+            <p>Pending Grievances</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon green">
+            <i class="bi bi-calendar-check"></i>
+        </div>
+        <div class="stat-content">
+            <h3>{{ stats.today_registrations }}</h3>
+            <p>Today's Registrations</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon blue">
+            <i class="bi bi-briefcase"></i>
+        </div>
+        <div class="stat-content">
+            <h3>{{ stats.total_jobs }}</h3>
+            <p>Total Jobs</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon green">
+            <i class="bi bi-briefcase-fill"></i>
+        </div>
+        <div class="stat-content">
+            <h3>{{ stats.active_jobs }}</h3>
+            <p>Active Jobs</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon orange">
+            <i class="bi bi-file-earmark-person"></i>
+        </div>
+        <div class="stat-content">
+            <h3>{{ stats.total_applications }}</h3>
+            <p>Total Applications</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon red">
+            <i class="bi bi-hourglass-split"></i>
+        </div>
+        <div class="stat-content">
+            <h3>{{ stats.pending_applications }}</h3>
+            <p>Pending Applications</p>
+        </div>
+    </div>
+</div>
+
+<div class="action-bar">
+    <a href="{{ url_for('admin_workers') }}" class="btn btn-primary">
+        <i class="bi bi-people"></i> Manage Workers
+    </a>
+    <a href="{{ url_for('admin_grievances') }}" class="btn btn-outline">
+        <i class="bi bi-exclamation-triangle"></i> Manage Grievances
+    </a>
+    <a href="{{ url_for('admin_jobs') }}" class="btn btn-outline">
+        <i class="bi bi-briefcase"></i> Manage Jobs
+    </a>
+    <a href="{{ url_for('admin_reports') }}" class="btn btn-outline">
+        <i class="bi bi-file-earmark-text"></i> Reports
+    </a>
+    {% if current_user.role == 'admin' %}
+    <a href="{{ url_for('add_user') }}" class="btn btn-outline">
+        <i class="bi bi-person-plus"></i> Add User
+    </a>
+    {% endif %}
+</div>
+
+<div class="grid grid-2">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Recent Workers</h3>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for worker in recent_workers %}
+                    <tr>
+                        <td><a href="{{ url_for('worker_profile', unique_id=worker.unique_id) }}" class="text-primary">{{ worker.unique_id }}</a></td>
+                        <td>{{ worker.name }}</td>
+                        <td>{{ worker.mobile }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Recent Grievances</h3>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Worker ID</th>
+                        <th>Issue</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for g in recent_grievances %}
+                    <tr>
+                        <td>{{ g.unique_worker_id }}</td>
+                        <td>{{ g.issue_type }}</td>
+                        <td><span class="badge badge-{{ 'red' if g.status == 'Pending' else 'orange' if g.status == 'In Progress' else 'green' }}">{{ g.status }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-16">
+    <div class="card-header">
+        <h3 class="card-title">Recent Job Applications</h3>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Worker Name</th>
+                    <th>Job Title</th>
+                    <th>Applied On</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in recent_applications %}
+                <tr>
+                    <td>{{ app.name }}</td>
+                    <td>{{ app.title }}</td>
+                    <td>{{ app.application_date[:10] }}</td>
+                    <td><span class="badge badge-{{ 'orange' if app.status == 'Pending' else 'blue' if app.status == 'Shortlisted' else 'green' if app.status == 'Selected' else 'red' }}">{{ app.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

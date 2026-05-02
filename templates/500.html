@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 80px auto; text-align: center;">
+    <div class="card">
+        <i class="bi bi-x-circle" style="font-size: 64px; color: #E74C3C;"></i>
+        <h1 style="font-size: 48px; margin: 16px 0;">500</h1>
+        <h3>Internal Server Error</h3>
+        <p class="text-muted">Something went wrong on our end. Please try again later.</p>
+        <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">
+            <i class="bi bi-house"></i> Back to Home
+        </a>
+    </div>
+</div>
+{% endblock %}

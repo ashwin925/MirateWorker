@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ t.app_title }}{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="bi bi-people-fill"></i>
+                TN Migrant Workers
+            </a>
+            <ul class="navbar-menu">
+                <li><a class="nav-link" href="{{ url_for('job_list') }}"><i class="bi bi-briefcase"></i> Jobs</a></li>
+                
+                {% if current_user.is_authenticated %}
+                <li><a class="nav-link" href="{{ url_for('admin_dashboard') }}"><i class="bi bi-speedometer2"></i> Admin</a></li>
+                <li><a class="nav-link" href="{{ url_for('admin_logout') }}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                
+                {% elif 'worker_id' in session %}
+                <li><a class="nav-link" href="{{ url_for('worker_dashboard') }}"><i class="bi bi-person-circle"></i> Dashboard</a></li>
+                <li><a class="nav-link" href="{{ url_for('worker_logout') }}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                
+                {% else %}
+                <li><a class="nav-link" href="{{ url_for('worker_login') }}"><i class="bi bi-person-check"></i> Worker Login</a></li>
+                <li><a class="btn btn-primary btn-sm" href="{{ url_for('admin_login') }}"><i class="bi bi-shield-lock"></i> Admin</a></li>
+                {% endif %}
+                
+                <li>
+                    <select onchange="window.location.href='/set_language/'+this.value" class="form-control" style="width: auto; padding: 6px 12px; font-size: 13px;">
+                        <option value="en" {% if lang == 'en' %}selected{% endif %}>English</option>
+                        <option value="ta" {% if lang == 'ta' %}selected{% endif %}>தமிழ்</option>
+                        <option value="hi" {% if lang == 'hi' %}selected{% endif %}>हिंदी</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">
+                            <i class="bi bi-{{ 'check-circle' if category == 'success' else 'exclamation-circle' }}"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <footer>
+        <i class="bi bi-shield-check"></i> &copy; 2025 Tamil Nadu Government - Migrant Worker Support System
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

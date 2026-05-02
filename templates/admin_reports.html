@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title"><i class="bi bi-file-earmark-text"></i> Reports</h1>
+</div>
+
+<div class="grid grid-2">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="bi bi-people"></i> Workers Report</h3>
+        </div>
+        <p class="text-muted">Download a complete list of all registered migrant workers with their details.</p>
+        <a href="{{ url_for('download_workers_csv') }}" class="btn btn-primary btn-block">
+            <i class="bi bi-download"></i> Download CSV - Workers
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="bi bi-exclamation-triangle"></i> Grievances Report</h3>
+        </div>
+        <p class="text-muted">Download a complete list of all grievances with their status and resolution notes.</p>
+        <a href="{{ url_for('download_grievances_csv') }}" class="btn btn-primary btn-block">
+            <i class="bi bi-download"></i> Download CSV - Grievances
+        </a>
+    </div>
+</div>
+
+<div class="mt-16">
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+{% endblock %}
